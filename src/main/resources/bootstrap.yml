@@ -1,0 +1,37 @@
+#debug: true
+#trace: true
+#logging:
+#  level:
+#    org:
+#      springframework:
+#        cloud:
+#          netflix: trace
+
+logging:
+  level:
+    mx:
+      santandertec:
+        gateway:
+          filters: info #debug to show info
+
+    org:
+      springframework:
+        security: info
+        
+spring:
+  application:
+    name: santech-sam-v2
+  cloud:    
+    config:
+      enabled: true
+      uri: http://gp-config-service:8080
+      name: ${spring.application.name}
+      label: ${spring.profiles.active}
+      profile: ${spring.profiles.active}
+      fail-fast: false
+      retry:
+        max-attempts: 10000
+    discovery:
+      enabled: false
+    #retry:
+       #max-attempts: 10000

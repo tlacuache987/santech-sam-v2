@@ -1,0 +1,81 @@
+# Configuration for Zuul - Reverse Proxy Service
+
+# Servers to proxy configuration
+proxied:
+  servers: http://transfers-host1:8088,http://transfers-host2:8089 # This property must be set, can set multiple using comma.
+
+# Zuul routes configuration
+zuul:
+  ignored-patterns:
+  - /login/**
+  - /logout/**
+  routes:
+    router-service:
+      path: /**
+      service-id: router-service
+      strip-prefix: true
+      sensitive-headers:
+      - Cookie,Set-Cookie,Authorization
+
+# Ribbon configuration (without Eureka)
+ribbon:
+  eureka:
+    enabled: false
+
+# Router configuration for Ribbon
+router-service:
+  ribbon:
+    listOfServers: ${proxied.servers}
+
+
+# ====================================
+
+# Configuration for Login Service
+
+spring:
+  profiles:
+    active: dev
+    
+# Hibernate JPA configuration
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+
+# Thymeleaf configuration
+  thymeleaf:
+    template-loader-path: classpath:/templates
+    suffix: .html
+    cache: false
+
+# Resource Boundle Message configuration
+  messages:
+    basename: validation
+
+# External LDAP directory configuration
+  ldap:
+    urls:
+    - ldap://localhost:10389
+    base: ou=people,dc=mycompany,dc=com
+    #username: cn=admin,dc=mycompany,dc=com
+    #password: secret
+
+# Embedded LDAP server config:
+    #embedded:
+      #base-dn:
+      #- dc=asb,dc=com
+      #credential:
+        #username: uid=admin
+        #password: secret
+      #ldif: classpath:asb-ldap.ldif
+      #port: 123
+      #validation:
+        #enabled: false
+
+  session:
+    timeout: 60s
+
+# Redis configuration  
+  redis:
+    host: redis
+    port: 6379
